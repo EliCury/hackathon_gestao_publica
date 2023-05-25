@@ -52,7 +52,7 @@ const isPasswordVisible = ref(false)
                 <VTextField
                   v-model="form.matricula"
                   prepend-inner-icon="tabler-user"
-                  label="Matrículas"
+                  label="Matrícula"
                   type="email"
                 />
               </VCol>
