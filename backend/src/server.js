@@ -11,6 +11,8 @@ app.use(cors({
 	methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }))
 
+app.use(express.json());
+
 // connect to database mysql
 connection.connect();
 
@@ -58,6 +60,11 @@ app.put('/comunicacao/:id', (req, res) => {
   
 
 app.post('/auth', function(request, response) {
+	if (!request.body || !request.body.email || !request.body.senha) {
+		response.send('Por favor, digite o e-mail e senha');
+		response.end();
+	}
+
 	let email = request.body.email;
 	let senha = request.body.senha;
 
@@ -66,9 +73,8 @@ app.post('/auth', function(request, response) {
 			if (error) throw error;
 
       if (results.length > 0) {
-				request.session.loggedin = true;
-				request.session.email = email;
-				response.redirect('/home');
+				response.send(results);
+				response.end();
 			} else {
 				response.send('E-mail e/ou senha inválidos!');
 			}			
