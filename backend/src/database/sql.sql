@@ -101,6 +101,11 @@ insert into permissoes (id, nome) values (null, 'gerente');
 insert into permissoes (id, nome) values (null, 'diretor');
 insert into permissoes (id, nome) values (null, 'secretario');
 
+insert into assinantes (id, id_comunicacao, status, data_criacao) values (null, 1, 'pendente', now());
+insert into assinantes (id, id_comunicacao, status, data_criacao) values (null, 2, 'assinado', now());
+insert into assinantes (id, id_comunicacao, status, data_criacao) values (null, 3, 'recebido', now());
+insert into assinantes (id, id_comunicacao, status, data_criacao) values (null, 4, 'pendente', now());
+
 insert into
     comunicacao (id, id_status, tipos_comunicacao, data_criacao, emissor, assunto, mensagem, observacao, emitido_por, modo)
 values (null, 1, 1, now(), 'teste', 'teste', 'msg', 'obs', 'teste', 'publico');

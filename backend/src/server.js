@@ -18,7 +18,9 @@ connection.connect();
 
 // obter todos usuarios.
 app.get('/comunicacao', (req, res) => {
-	connection.query(`SELECT comunicacao.* FROM comunicacao left JOIN assinantes ON comunicacao.id = assinantes.id_comunicacao left JOIN receptores ON comunicacao.id = receptores.id_comunicacao`, (error, results) => {
+	connection.query(`SELECT comunicacao.*, assinantes.status FROM comunicacao 
+	left JOIN assinantes ON comunicacao.id = assinantes.id_comunicacao 
+	left JOIN receptores ON comunicacao.id = receptores.id_comunicacao`, (error, results) => {
 	  if (error) throw error;
 	  res.json(results);
 	});
