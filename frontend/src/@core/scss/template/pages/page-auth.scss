@@ -1,11 +1,8 @@
 .layout-blank {
   .auth-wrapper {
     background-color: rgb(var(--v-theme-surface));
+    background: #00102C;
     min-block-size: calc(var(--vh, 1vh) * 100);
-  }
-
-  .auth-bg {
-    background-color: rgb(var(--v-theme-background));
   }
 
   .auth-v1-top-shape,
@@ -27,11 +24,6 @@
 
   .auth-illustration {
     z-index: 1;
-  }
-
-  .auth-v1-top-shape {
-    inset-block-start: -77px;
-    inset-inline-start: -40px;
   }
 
   .auth-v1-bottom-shape {
