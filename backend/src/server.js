@@ -51,7 +51,7 @@ app.put('/comunicacao/:id', (req, res) => {
 	});
   });
   
-//autetenticando o login do usuario.
+
 app.post('/auth', function(request, response) {
 	let email = request.body.email;
 	let senha = request.body.senha;

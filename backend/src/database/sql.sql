@@ -39,3 +39,25 @@ create table receptores (
     data_criacao DATE
 );
 
+
+insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '123', 'João', 'joao@teste.com', '123', 'aux', 'joaoaux');
+insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '456', 'Pedro', 'pedro@teste.com', '123', 'gerente', 'gerente123');
+insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '789', 'Ana', 'ana@teste.com', '123', 'secretaria', 'secretaria');
+insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '012', 'Paula', 'paula@teste.com', '123', 'agente de apoio', 'agentex');
+
+
+----- testes inserção de dados
+insert into status (id, nome) values (null, 'aberto');
+insert into status (id, nome) values (null, 'pendente');
+insert into status (id, nome) values (null, 'enviado');
+insert into status (id, nome) values (null, 'recebido');
+
+insert into tipos_comunicacao (id, nome) values (null, 'PAD');
+insert into tipos_comunicacao (id, nome) values (null, 'Licitação');
+insert into tipos_comunicacao (id, nome) values (null, 'Liberação curso / estágio');
+insert into tipos_comunicacao (id, nome) values (null, 'Licença qualificação do magisterio');
+
+insert into
+    comunicacao (id, id_status, tipos_comunicacao, data_criacao, emissor, assunto, mensagem, observacao, emitido_por, modo)
+values
+    (null, 1, 1, now(), 'teste', 'teste', 'msg', 'obs', 'teste', 'publico');
