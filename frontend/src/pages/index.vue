@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import axios from '@axios'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import type { Email, EmailFilter, EmailLabel } from '@/@fake-db/types'
 import ComposeDialog from '@/views/apps/email/ComposeDialog.vue'
 import EmailLeftSidebarContent from '@/views/apps/email/EmailLeftSidebarContent.vue'
 import EmailView from '@/views/apps/email/EmailView.vue'
@@ -20,6 +19,7 @@ const { isLeftSidebarOpen } = useResponsiveLeftSidebar()
 // Composables
 const route = useRoute()
 const store = useEmailStore()
+const emailsLista = ref([])
 
 const {
   labels,
@@ -32,11 +32,6 @@ const {
 // Compose dialog
 const isComposeDialogVisible = ref(false)
 
-axios.get('comunicacao').then(res => {
-  console.log(res)
-}).catch(e => {
-  console.log(e)
-})
 // Ref
 const q = ref('')
 
@@ -94,6 +89,13 @@ const fetchEmails = async () => {
   selectedEmails.value = []
   
 }
+
+axios.get('comunicacao').then(res => {
+  emailsLista.value = res.data
+  console.log(res)
+}).catch(e => {
+  console.log(e)
+})
 
 /*
   ℹ️ You can optimize it so it doesn't fetch emails on each action.
@@ -171,16 +173,6 @@ const openEmail = (email: Email) => {
 
   handleActionClick('read', [email.id])
 }
-
-const refreshOpenedEmail = async () => {
-  await fetchEmails()
-
-  if (openedEmail.value) {
-    openedEmail.value = store.emails.find(
-      e => e.id === (openedEmail.value as Email).id,
-    ) as Email
-  }
-}
 </script>
 
 <template>
@@ -204,16 +196,7 @@ const refreshOpenedEmail = async () => {
       </VCol>
     </VRow>
     <VLayout class="email-app-layout mt-4 teste">
-    <VNavigationDrawer
-      v-model="isLeftSidebarOpen"
-      absolute
-      touchless
-      location="start"
-      :temporary="$vuetify.display.mdAndDown"
-    >
-      <EmailLeftSidebarContent @toggle-compose-dialog-visibility="isComposeDialogVisible = !isComposeDialogVisible" />
-    </VNavigationDrawer>
-    <EmailView
+    <!-- <EmailView
       :email="openedEmail"
       :email-meta="emailViewMeta"
       @refresh="refreshOpenedEmail"
@@ -223,7 +206,7 @@ const refreshOpenedEmail = async () => {
       @unread="handleActionClick('unread', openedEmail ? [openedEmail.id] : [])"
       @star="handleActionClick('star', openedEmail ? [openedEmail.id] : [])"
       @unstar="handleActionClick('unstar', openedEmail ? [openedEmail.id] : [])"
-    />
+    /> -->
     <VMain>
       <VCard
         flat
@@ -410,14 +393,15 @@ const refreshOpenedEmail = async () => {
           :options="{ wheelPropagation: false }"
           class="email-list"
         >
-          <li
-            v-for="email in store.emails"
-            v-show="store.emails.length"
-            :key="email.id"
-            class="email-item d-flex align-center py-2 px-5 cursor-pointer"
-            :class="[{ 'email-read': email.isRead }]"
-            @click="openEmail(email)"
-          >
+        <li
+        v-for="email in emailsLista"
+        v-show="emailsLista.length"
+        :key="email.id"
+        class="email-item d-flex align-center py-2 px-5 cursor-pointer"
+        :class="[{ 'email-read': email.isRead }]"
+        @click="openEmail(email)"
+        >
+          {{ email }}
             <VCheckbox
               :model-value="selectedEmails.includes(email.id)"
               class="flex-shrink-0"
@@ -438,17 +422,8 @@ const refreshOpenedEmail = async () => {
                 icon="tabler-star"
               />
             </VBtn>
-            <VAvatar
-              class="mx-2"
-              size="32"
-            >
-              <VImg
-                :src="email.from.avatar"
-                :alt="email.from.name"
-              />
-            </VAvatar>
             <h6 class="mx-2 text-body-1 font-weight-medium text-high-emphasis">
-              {{ email.from.name }}
+              {{ email.assunto }}
             </h6>
             <span class="truncate">{{ email.subject }}</span>
             <VSpacer />

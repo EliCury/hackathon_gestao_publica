@@ -12,6 +12,7 @@ export default [
   },
   {
     title: 'Nova CI',
+    to: { name: 'comunicacao-nova-ci' },
     icon: { icon: 'tabler-file' },
   },
   {
