@@ -1,10 +1,17 @@
 import express from 'express'
+import cors from 'cors'
 
 import { connection } from './database/index.js'
 
 const app = express()
 const port = 3000
 
+app.use(cors({
+	origin: '*',
+	methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}))
+
+app.use(express.json());
 
 // connect to database mysql
 connection.connect();
@@ -60,12 +67,12 @@ app.listen(port, () => {
 // obter todos usuarios.
 app.get('/comunicacao', (req, res) => {
 	connection.query(`SELECT * FROM comunicacao as c
-	 INNER JOIN assinantes as a ON c.id = a.id_comunicacao 
-	 INNER JOIN receptores as r ON r.id = a.id_comunicacao`, (error, results) => {
+	LEFT JOIN assinantes as a ON a.id_comunicacao = a.id_comunicacao
+	LEFT JOIN receptores as r ON r.id_comunicacao = a.id_comunicacao`, (error, results) => {
 	  if (error) throw error;
 	  res.json(results);
 	});
-  });
+});
 
 //adicionar uma nova comunicacao
 app.post('/comunicacao', (req, res) => {
@@ -74,7 +81,7 @@ app.post('/comunicacao', (req, res) => {
 	  if (error) throw error;
 	  res.json({ message: 'Comunicacao Criada com Sucesso!', id: results.insertId });
 	});
-  });
+});
 
 // obter uma comunicacao por id.
 app.get('/comunicacao/:id', (req, res) => {
@@ -97,7 +104,7 @@ app.put('/comunicacao/:id', (req, res) => {
 	  if (error) throw error;
 	  res.json({ message: 'Comunicação editada com Sucesso!' });
 	});
-  });
+});
 
   //Adicionar uma nova tag
   app.post('/tags', (req, res) => {
@@ -131,6 +138,11 @@ app.put('/tags/:id', (req, res) => {
 
 //Autorizar a authenticação de login.
 app.post('/auth', function(request, response) {
+	if (!request.body || !request.body.email || !request.body.senha) {
+		response.send('Por favor, digite o e-mail e senha');
+		response.end();
+	}
+
 	let email = request.body.email;
 	let senha = request.body.senha;
 
@@ -139,9 +151,8 @@ app.post('/auth', function(request, response) {
 			if (error) throw error;
 
       if (results.length > 0) {
-				request.session.loggedin = true;
-				request.session.email = email;
-				response.redirect('/home');
+				response.send(results);
+				response.end();
 			} else {
 				response.send('E-mail e/ou senha inválidos!');
 			}			
@@ -156,5 +167,3 @@ app.post('/auth', function(request, response) {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
-
-

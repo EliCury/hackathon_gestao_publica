@@ -7,8 +7,27 @@ export default [
     icon: { icon: 'tabler-smart-home' },
   },
   {
-    title: 'Second page',
-    to: { name: 'second-page' },
+    title: 'Iniciar processo',
+    icon: { icon: 'tabler-file' },
+  },
+  {
+    title: 'Nova CI',
+    icon: { icon: 'tabler-file' },
+  },
+  {
+    title: 'Novo Ofício',
+    icon: { icon: 'tabler-file' },
+  },
+  {
+    title: 'Ofício',
+    icon: { icon: 'tabler-file' },
+  },
+  {
+    title: 'Processo',
+    icon: { icon: 'tabler-file' },
+  },
+  {
+    title: 'Comunicação Geral',
     icon: { icon: 'tabler-file' },
   },
 ] as VerticalNavItems
