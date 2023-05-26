@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import axios from '@axios'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import ComposeDialog from '@/views/apps/email/ComposeDialog.vue'
-import EmailLeftSidebarContent from '@/views/apps/email/EmailLeftSidebarContent.vue'
-import EmailView from '@/views/apps/email/EmailView.vue'
 import type { MoveEmailToAction } from '@/views/apps/email/useEmail'
 import { useEmail } from '@/views/apps/email/useEmail'
 import { useEmailStore } from '@/views/apps/email/useEmailStore'
@@ -12,9 +9,6 @@ import { formatDateToMonthShort } from '@core/utils/formatters'
 
 const pesquisa = ref('')
 const filtros = ref('')
-
-
-const { isLeftSidebarOpen } = useResponsiveLeftSidebar()
 
 // Composables
 const route = useRoute()
@@ -29,9 +23,6 @@ const {
   moveSelectedEmailTo,
 } = useEmail()
 
-// Compose dialog
-const isComposeDialogVisible = ref(false)
-
 // Ref
 const q = ref('')
 
@@ -39,29 +30,6 @@ const q = ref('')
 // Email Selection
 // ------------------------------------------------
 const selectedEmails = ref<Email['id'][]>([])
-
-const toggleSelectedEmail = (emailId: Email['id']) => {
-  const emailIndex = selectedEmails.value.indexOf(emailId)
-  if (emailIndex === -1)
-    selectedEmails.value.push(emailId)
-  else selectedEmails.value.splice(emailIndex, 1)
-}
-
-const selectAllEmailCheckbox = computed(
-  () => store.emails.length && store.emails.length === selectedEmails.value.length,
-)
-
-const isSelectAllEmailCheckboxIndeterminate = computed(
-  () =>
-    Boolean(selectedEmails.value.length)
-    && store.emails.length !== selectedEmails.value.length,
-)
-
-const selectAllCheckboxUpdate = () => {
-  selectedEmails.value = !selectAllEmailCheckbox.value
-    ? store.emails.map(email => email.id)
-    : []
-}
 
 // Email View
 const openedEmail = ref<Email | null>(null)
@@ -142,32 +110,6 @@ watch([() => route.params.filter, () => route.params.label], () => {
   openedEmail.value = null
 })
 
-// Email actions
-const handleMoveMailsTo = (action: MoveEmailToAction) => {
-  moveSelectedEmailTo(action, selectedEmails.value)
-  fetchEmails()
-}
-
-const updateLabel = (label: Email['labels'][number]) => {
-  store.updateEmailLabels(selectedEmails.value, label)
-
-  fetchEmails()
-}
-
-// Email view
-const changeOpenedEmail = (dir: 'previous' | 'next') => {
-  if (!openedEmail.value)
-    return
-
-  const openedEmailIndex = store.emails.findIndex(
-    e => e.id === (openedEmail.value as Email).id,
-  )
-
-  const newEmailIndex = dir === 'previous' ? openedEmailIndex - 1 : openedEmailIndex + 1
-
-  openedEmail.value = store.emails[newEmailIndex]
-}
-
 const openEmail = (email: Email) => {
   openedEmail.value = email
 
@@ -196,193 +138,33 @@ const openEmail = (email: Email) => {
       </VCol>
     </VRow>
     <VLayout class="email-app-layout mt-4 teste">
-    <!-- <EmailView
-      :email="openedEmail"
-      :email-meta="emailViewMeta"
-      @refresh="refreshOpenedEmail"
-      @navigated="changeOpenedEmail"
-      @close="openedEmail = null"
-      @remove="handleActionClick('trash', openedEmail ? [openedEmail.id] : [])"
-      @unread="handleActionClick('unread', openedEmail ? [openedEmail.id] : [])"
-      @star="handleActionClick('star', openedEmail ? [openedEmail.id] : [])"
-      @unstar="handleActionClick('unstar', openedEmail ? [openedEmail.id] : [])"
-    /> -->
     <VMain>
       <VCard
         flat
         class="h-100 d-flex flex-column"
       >
-        <div class="d-flex align-center">
-          <VBtn
-            variant="text"
-            color="default"
-            icon
-            size="small"
-            class="d-lg-none ms-3"
-            @click="isLeftSidebarOpen = true"
-          >
-            <VIcon
-              size="24"
-              icon="tabler-menu-2"
-            />
-          </VBtn>
-          <!-- 👉 Search -->
-          <VTextField
-            v-model="q"
-            density="default"
-            class="email-search px-1 flex-grow-1"
-            prepend-inner-icon="tabler-search"
-            placeholder="Search email"
-          />
-        </div>
-
-        <VDivider />
-
         <!-- 👉 Action bar -->
-        <div class="py-2 px-5 d-flex items-center">
-          <!-- TODO: Make checkbox primary on indeterminate state -->
-          <VCheckbox
-            :model-value="selectAllEmailCheckbox"
-            :indeterminate="isSelectAllEmailCheckboxIndeterminate"
-            @update:model-value="selectAllCheckboxUpdate"
-          />
-
-          <div
-            class="w-100 d-flex items-center action-bar-actions"
-            :style="{
-              visibility:
-                isSelectAllEmailCheckboxIndeterminate || selectAllEmailCheckbox
-                  ? undefined
-                  : 'hidden',
-            }"
-          >
-            <!-- Trash -->
-            <VBtn
-              v-show="$route.params.filter !== 'trashed'"
-              variant="text"
-              color="default"
-              icon
-              size="small"
-              @click="handleActionClick('trash')"
-            >
-              <VIcon
-                size="22"
-                icon="tabler-trash"
-              />
-            </VBtn>
-
-            <!-- Mark unread -->
-            <VBtn
-              variant="text"
-              color="default"
-              icon
-              size="small"
-              @click="handleActionClick('unread')"
-            >
-              <VIcon
-                size="22"
-                icon="tabler-mail"
-              />
-            </VBtn>
-
-            <!-- Move to folder -->
-            <VBtn
-              variant="text"
-              color="default"
-              icon
-              size="small"
-            >
-              <VIcon
-                size="22"
-                icon="tabler-folder"
-              />
-              <VMenu activator="parent">
-                <VList density="compact">
-                  <template
-                    v-for="moveTo in emailMoveToFolderActions"
-                    :key="moveTo.title"
-                  >
-                    <VListItem
-                      :class="
-                        shallShowMoveToActionFor(moveTo.action) ? 'd-flex' : 'd-none'
-                      "
-                      href="#"
-                      class="items-center"
-                      @click="handleMoveMailsTo(moveTo.action)"
-                    >
-                      <template #prepend>
-                        <VIcon
-                          :icon="moveTo.icon"
-                          class="me-2"
-                          size="20"
-                        />
-                      </template>
-                      <VListItemTitle class="text-capitalize">
-                        {{ moveTo.action }}
-                      </VListItemTitle>
-                    </VListItem>
-                  </template>
-                </VList>
-              </VMenu>
-            </VBtn>
-
-            <!-- Update labels -->
-            <VBtn
-              variant="text"
-              color="default"
-              icon
-              size="small"
-            >
-              <VIcon
-                size="22"
-                icon="tabler-tag"
-              />
-              <VMenu activator="parent">
-                <VList density="compact">
-                  <VListItem
-                    v-for="label in labels"
-                    :key="label.title"
-                    href="#"
-                    @click="updateLabel(label.title)"
-                  >
-                    <template #prepend>
-                      <VBadge
-                        inline
-                        :color="resolveLabelColor(label.title)"
-                        dot
-                      />
-                    </template>
-                    <VListItemTitle class="ms-2 text-capitalize">
-                      {{ label.title }}
-                    </VListItemTitle>
-                  </VListItem>
-                </VList>
-              </VMenu>
-            </VBtn>
-          </div>
-          <VSpacer />
+        <div class="py-4 d-flex items-center">
           <VBtn
-            variant="text"
             color="default"
-            icon
             size="small"
-            @click="fetchEmails"
+            class="mx-3"
           >
-            <VIcon
-              size="22"
-              icon="tabler-reload"
-            />
+            Recebidas
           </VBtn>
           <VBtn
-            variant="text"
             color="default"
-            icon
             size="small"
+            class="mr-3"
           >
-            <VIcon
-              size="22"
-              icon="tabler-dots-vertical"
-            />
+            Enviadas
+          </VBtn>
+          <VBtn
+            color="default"
+            size="small"
+            class="mr-3"
+          >
+            Aguardando Assinatura
           </VBtn>
         </div>
         <VDivider />
@@ -393,107 +175,32 @@ const openEmail = (email: Email) => {
           :options="{ wheelPropagation: false }"
           class="email-list"
         >
-        <li
-        v-for="email in emailsLista"
-        v-show="emailsLista.length"
-        :key="email.id"
-        class="email-item d-flex align-center py-2 px-5 cursor-pointer"
-        :class="[{ 'email-read': email.isRead }]"
-        @click="openEmail(email)"
-        >
-          {{ email }}
-            <VCheckbox
-              :model-value="selectedEmails.includes(email.id)"
-              class="flex-shrink-0"
-              @update:model-value="toggleSelectedEmail(email.id)"
-              @click.stop
-            />
-            <VBtn
-              variant="text"
-              icon
-              size="small"
-              :color="email.isStarred ? 'warning' : 'default'"
-              @click.stop="
-                handleActionClick(email.isStarred ? 'unstar' : 'star', [email.id])
-              "
-            >
-              <VIcon
-                size="22"
-                icon="tabler-star"
-              />
-            </VBtn>
-            <h6 class="mx-2 text-body-1 font-weight-medium text-high-emphasis">
-              {{ email.assunto }}
-            </h6>
-            <span class="truncate">{{ email.subject }}</span>
-            <VSpacer />
-            <div class="email-meta">
-              <VBadge
-                v-for="label in email.labels"
-                :key="label"
-                inline
-                :color="resolveLabelColor(label)"
-                dot
-              />
-              <small class="text-disabled ms-2">{{
-                formatDateToMonthShort(email.time)
-              }}</small>
-            </div>
-
-            <!-- 👉 Email actions -->
-            <div class="email-actions d-none">
-              <VBtn
-                variant="text"
-                color="default"
-                icon
-                size="small"
-                @click.stop="handleActionClick('trash', [email.id])"
-              >
-                <VIcon
-                  size="22"
-                  icon="tabler-trash"
-                />
-              </VBtn>
-              <VBtn
-                variant="text"
-                color="default"
-                icon
-                size="small"
-                @click.stop="
-                  handleActionClick(email.isRead ? 'unread' : 'read', [email.id])
-                "
-              >
-                <VIcon
-                  size="22"
-                  :icon="email.isRead ? 'tabler-mail' : 'tabler-mail-opened'"
-                />
-              </VBtn>
-              <VBtn
-                variant="text"
-                color="default"
-                icon
-                size="small"
-                @click.stop="handleActionClick('spam', [email.id])"
-              >
-                <VIcon
-                  size="22"
-                  icon="tabler-alert-octagon"
-                />
-              </VBtn>
-            </div>
-          </li>
           <li
-            v-show="!store.emails.length"
-            class="py-4 px-5 text-center"
+            v-for="email in emailsLista"
+            v-show="emailsLista.length"
+            :key="email.id"
+            class="email-item d-flex align-center py-2 px-5 cursor-pointer"
+            :class="[{ 'email-read': email.isRead }]"
+            @click="openEmail(email)"
           >
-            <span class="text-high-emphasis">No items found.</span>
-          </li>
+              <h6 class="mx-2 text-body-1 font-weight-medium text-high-emphasis">
+                {{ email.assunto }}
+              </h6>
+              -
+              <h6 class="mx-2 text-body-1 font-weight-medium text-high-emphasis">
+                {{ email.emissor }}
+              </h6>
+
+              <VSpacer />
+            </li>
+            <li
+              v-show="!emailsLista.length"
+              class="py-4 px-5 text-center"
+            >
+              <span class="text-high-emphasis">Nenhum registro encontrado.</span>
+            </li>
         </PerfectScrollbar>
       </VCard>
-      <ComposeDialog
-        v-show="isComposeDialogVisible"
-        @close="isComposeDialogVisible = false"
-      />
     </VMain>
   </VLayout>
   </div>
