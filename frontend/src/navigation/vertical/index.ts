@@ -2,9 +2,14 @@ import type { VerticalNavItems } from '@/@layouts/types'
 
 export default [
   {
-    title: 'Home',
+    title: 'Início',
     to: { name: 'index' },
     icon: { icon: 'tabler-smart-home' },
+  },
+  {
+    title: 'Caixa de Entrada',
+    to: { name: 'caixa-entrada' },
+    icon: { icon: 'tabler-mail' },
   },
   {
     title: 'Iniciar processo',

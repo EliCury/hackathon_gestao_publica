@@ -12,6 +12,7 @@ import { VerticalNavLayout } from '@layouts'
 
 const { appRouteTransition, isLessThanOverlayNavBreakpoint } = useThemeConfig()
 const { width: windowWidth } = useWindowSize()
+const userData = JSON.parse(localStorage.getItem('userData') || 'null')
 </script>
 
 <template>

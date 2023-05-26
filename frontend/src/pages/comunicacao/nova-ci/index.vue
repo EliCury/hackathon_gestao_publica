@@ -59,7 +59,7 @@ const salvarCi = () => {
                 <VCheckbox label="Privado"></VCheckbox>
               </VCol>
             </VRow>
-            <VTextField class="my-5" label="Anexar Arquivos" />
+            <VFileInput class="my-5" label="Anexar Arquivos" />
             <VTextField class="my-4" label="Adicionar Tags" />
             <span class="info-span mb-4">
               <VIcon class="mr-2" size="22" icon="tabler-info-circle"></VIcon>
@@ -99,7 +99,7 @@ const salvarCi = () => {
   display: inline-block;
   align-items: center;
   font-style: italic;
-  background-color: #C1CADA;
+  background-color: rgb(var(--v-theme-secondary));
   padding: 7px;
   border-radius: 6px;
 }

@@ -309,18 +309,17 @@ export const getRadialBarChartConfig = (themeColors: ThemeInstance['themes']['va
 
 export const getDonutChartConfig = (themeColors: ThemeInstance['themes']['value']['colors']) => {
   const donutColors = {
-    series1: '#fdd835',
-    series2: '#00d4bd',
-    series3: '#826bf8',
-    series4: '#32baff',
-    series5: '#ffa1a1',
+    series1: '#30C975',
+    series2: '#1B448B',
+    series3: '#FFA34A',
+    series5: '#EB5B5C',
   }
 
   const { themeSecondaryTextColor, themePrimaryTextColor } = colorVariables(themeColors)
 
   return {
     stroke: { width: 0 },
-    labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+    labels: ['Recebidas', 'Atrasados', 'Pendente', 'Assinado'],
     colors: [donutColors.series1, donutColors.series5, donutColors.series3, donutColors.series2],
     dataLabels: {
       enabled: true,
@@ -351,7 +350,7 @@ export const getDonutChartConfig = (themeColors: ThemeInstance['themes']['value'
             total: {
               show: true,
               fontSize: '1.5rem',
-              label: 'Operational',
+              label: 'Registros',
               formatter: () => '31%',
               color: themePrimaryTextColor,
             },
@@ -403,9 +402,9 @@ export const getDonutChartConfig = (themeColors: ThemeInstance['themes']['value'
 
 export const getAreaChartSplineConfig = (themeColors: ThemeInstance['themes']['value']['colors']) => {
   const areaColors = {
-    series3: '#e0cffe',
-    series2: '#b992fe',
-    series1: '#ab7efd',
+    series3: '#0b8770',
+    series2: '#a6c288',
+    series1: '#ebe68d',
   }
 
   const { themeSecondaryTextColor, themeBorderColor, themeDisabledTextColor } = colorVariables(themeColors)

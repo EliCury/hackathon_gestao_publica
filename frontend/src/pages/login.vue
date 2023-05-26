@@ -1,13 +1,58 @@
 <script setup lang="ts">
+import axios from '@axios'
+import { VForm } from 'vuetify/components'
+import { useAppAbility } from '@/plugins/casl/useAppAbility'
 import authloginIlustration from '@images/pages/fundo01 1.svg'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { emailValidator, requiredValidator } from '@validators'
 
-const form = ref({
-  matricula: '',
-  password: '',
-  remember: false,
+const route = useRoute()
+const router = useRouter()
+const ability = useAppAbility()
+
+const refVForm = ref<VForm>()
+const loading = ref(false)
+
+const form = reactive({
+  usuario: ref(''),
+  senha: ref(''),
 })
+
+const permissions = user => {
+  // if (user.is_superuser)
+  return [{ action: 'manage', subject: 'all' }]
+}
+
+const login = () => {
+  loading.value = true
+  axios.post('auth/', { email: form.usuario, senha: form.senha })
+    .then(r => {
+      loading.value = false
+      const user  = r.data[0]
+
+      const userAbilities = permissions(r.data[0])
+
+      localStorage.setItem('userAbilities', JSON.stringify(userAbilities))
+      ability.update(userAbilities)
+      localStorage.setItem('userData', JSON.stringify(user))
+
+      // Redirect to `to` query if exist or redirect to index route
+      router.replace(route.query.to ? String(route.query.to) : '/')
+    })
+    .catch(e => {
+      loading.value = false
+      console.error(e.response.data)
+    })
+}
+
+const onSubmit = () => {
+  refVForm.value?.validate()
+    .then(({ valid: isValid }) => {
+      if (isValid)
+        login()
+    })
+}
 
 const isPasswordVisible = ref(false)
 </script>
@@ -45,33 +90,39 @@ const isPasswordVisible = ref(false)
         </VCardText>
 
         <VCardText>
-          <VForm @submit.prevent="() => {}">
+          <VForm
+            ref="refVForm"
+            @submit.prevent="onSubmit"
+          >
             <VRow>
-              <!-- Matricula-->
+              <!-- Usuário-->
               <VCol cols="12">
                 <VTextField
-                  v-model="form.matricula"
+                  v-model="form.usuario"
                   prepend-inner-icon="tabler-user"
-                  label="Matrícula"
+                  label="Usuário"
                   type="email"
+                  :rules="[requiredValidator, emailValidator]"
                 />
               </VCol>
 
               <!-- password -->
               <VCol cols="12">
                 <VTextField
-                  v-model="form.password"
+                  v-model="form.senha"
                   prepend-inner-icon="tabler-lock"
                   label="Senha"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                  :rules="[requiredValidator]"
                 />
               </VCol>
                 <VCol cols="12">
                     <VBtn
                         block
                         type="submit"
+                        :loading="loading"
                     >
                         Entrar
                     </VBtn>
@@ -93,6 +144,9 @@ const isPasswordVisible = ref(false)
 </style>
 
 <route lang="yaml">
-meta:
-  layout: blank
-</route>
+  meta:
+    layout: blank
+    action: read
+    subject: Auth
+    redirectIfLoggedIn: true
+  </route>

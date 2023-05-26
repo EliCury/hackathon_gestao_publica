@@ -76,17 +76,21 @@ const handleNavScroll = (evt: Event) => {
       <slot name="nav-header">
         <RouterLink
           to="/"
-          class="app-logo d-flex align-center gap-x-3 app-title-wrapper"
+          class="app-logo d-flex align-center app-title-wrapper"
         >
-          <VNodeRenderer :nodes="config.app.logo" />
+          <VNodeRenderer
+            v-show="hideTitleAndIcon"
+            :nodes="config.app.logo" 
+            style="height: 40px;"
+          />
 
-          <Transition name="vertical-nav-app-title">
-            <h1
+          <Transition name="vertical-nav-app-title" class="ml-4">
+            <VNodeRenderer
               v-show="!hideTitleAndIcon"
-              class="app-title font-weight-bold leading-normal text-xl"
-            >
-              {{ config.app.title }}
-            </h1>
+              class="position-relative"
+              :nodes="config.app.logo" 
+              style="width: 150px;"
+            />
           </Transition>
         </RouterLink>
         <!-- 👉 Vertical nav actions -->
@@ -139,6 +143,10 @@ const handleNavScroll = (evt: Event) => {
         />
       </PerfectScrollbar>
     </slot>
+    <span class="pa-6">
+      <VIcon size="22" icon="tabler-info-circle"></VIcon>
+      <span v-show="!hideTitleAndIcon" class="ml-2">Ajuda</span>
+    </span>
   </Component>
 </template>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const data = ref('')
+import ModeloPdfCi from '@/assets/images/ModeloPdfCi.jpeg'
+const emit = defineEmits(['voltar'])
 const emissor = ref('')
 </script>
 
@@ -8,11 +9,7 @@ const emissor = ref('')
     <VCard class="pa-4">
       <VRow>
         <VCol cols="8">
-          <VRow>
-            <VCol cols="6">
-              <VTextField v-model="data" label="Data" class="mt-5" />
-            </VCol>
-          </VRow>
+            <VImg :src="ModeloPdfCi"/>
         </VCol>
 
         <VCol cols="4">
@@ -53,7 +50,7 @@ const emissor = ref('')
                   <VBtn color="primary" block>Visualizar resposta</VBtn>
                 </VCol>
                 <VCol cols="4">
-                  <VBtn color="primary" block>Voltar</VBtn>
+                  <VBtn color="primary" block @click="$emit('voltar')">Voltar</VBtn>
                 </VCol>
               </VRow>
             </VCol>
