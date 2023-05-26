@@ -56,6 +56,11 @@ create table if not exists receptores (
     data_criacao DATE
 );
 
+drop table if exists etiquetas;
+create table if not exists etiquetas (
+    id int auto_increment primary key,
+    nome_etiqueta VARCHAR(255) not null
+);
 
 insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '123', 'João', 'joao@teste.com', '123', 'aux', 'joaoaux');
 insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '456', 'Pedro', 'pedro@teste.com', '123', 'gerente', 'gerente123');
