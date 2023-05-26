@@ -1,8 +1,10 @@
-create database hackathon_gestao_publica;
+drop database if exists hackathon_gestao_publica;
+create database if not exists hackathon_gestao_publica;
 
 use hackathon_gestao_publica;
 
-create table users (
+drop table if exists users;
+create table if not exists users (
     id int auto_increment PRIMARY KEY,
     matricula VARCHAR(255) NOT NULL,
     nome VARCHAR(255) NOT NULL,
@@ -12,10 +14,23 @@ create table users (
     assinatura VARCHAR(255) NOT NULL
 );
 
-create table comunicacao (
+drop table if exists status;
+create table if not exists status (
     id int auto_increment PRIMARY KEY,
-    tipo VARCHAR(255) NOT NULL,
-    status VARCHAR(255) NOT NULL,
+    nome VARCHAR(255) not null
+);
+
+drop table if exists tipos_comunicacao;
+create table if not exists tipos_comunicacao (
+    id int auto_increment PRIMARY KEY,
+    nome VARCHAR(255) not null
+);
+
+drop table if exists comunicacao;
+create table if not exists comunicacao (
+    id int auto_increment PRIMARY KEY,
+    id_status int not null,
+    tipos_comunicacao int not null,
     data_criacao DATE,
     emissor VARCHAR(255) NOT NULL,
     assunto VARCHAR(255) NOT NULL,
@@ -25,14 +40,16 @@ create table comunicacao (
     modo ENUM('publico', 'privado')
 );
 
-create table assinantes (
+drop table if exists assinantes;
+create table if not exists assinantes (
     id int auto_increment primary key,
     id_comunicacao int not null,
     status ENUM('pendente', 'assinado', 'recebido'),
     data_criacao DATE
 );
 
-create table receptores (
+drop table if exists receptores;
+create table if not exists receptores (
     id int auto_increment primary key,
     id_comunicacao int not null,
     id_user int not null,
@@ -46,7 +63,7 @@ insert into users (id, matricula, nome, email, senha, cargo, assinatura) values 
 insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '012', 'Paula', 'paula@teste.com', '123', 'agente de apoio', 'agentex');
 
 
------ testes inserção de dados
+-- testes inserção de dados
 insert into status (id, nome) values (null, 'aberto');
 insert into status (id, nome) values (null, 'pendente');
 insert into status (id, nome) values (null, 'enviado');
