@@ -70,7 +70,7 @@ create table if not exists etiquetas (
 );
 
 drop table if exists tags;
-create table if not exists etiquetas (
+create table if not exists tags (
     id int auto_increment primary key,
     id_user int not null,
     nome_tags VARCHAR(255) not null
