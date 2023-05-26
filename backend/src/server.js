@@ -61,13 +61,22 @@ app.put('/comunicacao/:id', (req, res) => {
 //Adicionar uma nova tag
 app.post('/tags', (req, res) => {
 	const { id, nome, id_user } = req.body;
-	connection.query('INSERT INTO comunicacao (id, nome_tags, id_user) VALUES (?, ?, ?)', [id, nome, id_user], (error, results) => {
+	connection.query('INSERT INTO tags (id, nome_tags, id_user) VALUES (?, ?, ?)', [id, nome, id_user], (error, results) => {
 	  if (error) throw error;
 	  res.json({ message: 'Tag Criada com Sucesso!', id: results.insertId });
 	});
 });
 
-  //deletar uma tag
+//listar todas as tag
+app.get('/tags', (req, res) => {
+	const { id, nome, id_user } = req.body;
+	connection.query('SELECT * FROM tags', (error, results) => {
+	  if (error) throw error;
+	  res.json(results);
+	});
+});
+
+//deletar uma tag
 app.delete('/tags/:id', (req, res) => {
 	const {id} = req.params;
 	const {nome_tags, id_user} = req.body;
@@ -87,7 +96,6 @@ app.put('/tags/:id', (req, res) => {
 	});
 });
 
-
 //Autorizar a authenticação de login.
 app.post('/auth', function(request, response) {
 	if (!request.body || !request.body.email || !request.body.senha) {
@@ -104,10 +112,10 @@ app.post('/auth', function(request, response) {
 
       if (results.length > 0) {
 				response.send(results);
-				response.end();
 			} else {
 				response.send('E-mail e/ou senha inválidos!');
 			}
+
 			response.end();
 		});
 	} else {
@@ -116,6 +124,4 @@ app.post('/auth', function(request, response) {
 	}
 });
 
-app.listen(port, () => {
-  console.log(`rodando na porta: ${port}`)
-})
+app.listen(port, () => { console.log(`rodando na porta: ${port}`) })

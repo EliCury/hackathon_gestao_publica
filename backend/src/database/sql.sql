@@ -102,20 +102,17 @@ insert into permissoes (id, nome) values (null, 'secretario');
 
 insert into
     comunicacao (id, id_status, tipos_comunicacao, data_criacao, emissor, assunto, mensagem, observacao, emitido_por, modo)
-values
-    (null, 1, 1, now(), 'teste', 'teste', 'msg', 'obs', 'teste', 'publico');
+values (null, 1, 1, now(), 'teste', 'teste', 'msg', 'obs', 'teste', 'publico');
 
 insert into
     comunicacao (id, id_status, tipos_comunicacao, data_criacao, emissor, assunto, mensagem, observacao, emitido_por, modo)
-values
-    (null, 2, 2, now(), 'Setor de Folha de Pagamento', 'Pagamento ao servidor', 'Olá eu quero te pagar', '', 'Pedro', 'privado');
+values (null, 2, 2, now(), 'Setor de Folha de Pagamento', 'Pagamento ao servidor', 'Olá eu quero te pagar', '', 'Pedro', 'privado');
 
 insert into
     comunicacao (id, id_status, tipos_comunicacao, data_criacao, emissor, assunto, mensagem, observacao, emitido_por, modo)
-values
-    (null, 3, 3, now(), 'Setor de compras', 'Comprar torneira', 'Olá eu quero comprar uma torneira', '', 'Ana', 'privado');
+values (null, 3, 3, now(), 'Setor de compras', 'Comprar torneira', 'Olá eu quero comprar uma torneira', '', 'Ana', 'privado');
 
 insert into
     comunicacao (id, id_status, tipos_comunicacao, data_criacao, emissor, assunto, mensagem, observacao, emitido_por, modo)
-values
-    (null, 4, 4, now(), 'Gestão de carreiras', 'progressão de carreira', 'vamos melhorar sua vida', '', 'Paula', 'privado');
+values (null, 4, 4, now(), 'Gestão de carreiras', 'progressão de carreira', 'vamos melhorar sua vida', '', 'Paula', 'privado');
+
