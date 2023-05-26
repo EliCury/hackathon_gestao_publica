@@ -94,6 +94,12 @@ insert into tipos_comunicacao (id, nome) values (null, 'Licitação');
 insert into tipos_comunicacao (id, nome) values (null, 'Liberação curso / estágio');
 insert into tipos_comunicacao (id, nome) values (null, 'Licença qualificação do magisterio');
 
+insert into permissoes (id, nome) values (null, 'padrão');
+insert into permissoes (id, nome) values (null, 'encarregado');
+insert into permissoes (id, nome) values (null, 'gerente');
+insert into permissoes (id, nome) values (null, 'diretor');
+insert into permissoes (id, nome) values (null, 'secretario');
+
 insert into
     comunicacao (id, id_status, tipos_comunicacao, data_criacao, emissor, assunto, mensagem, observacao, emitido_por, modo)
 values
