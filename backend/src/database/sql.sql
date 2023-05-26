@@ -3,9 +3,16 @@ create database if not exists hackathon_gestao_publica;
 
 use hackathon_gestao_publica;
 
+drop table if exists permissoes;
+create table if not exists permissoes (
+    id int auto_increment PRIMARY KEY,
+    nome VARCHAR(255) not null
+);
+
 drop table if exists users;
 create table if not exists users (
     id int auto_increment PRIMARY KEY,
+    id_permissao int not null,
     matricula VARCHAR(255) NOT NULL,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
@@ -62,10 +69,18 @@ create table if not exists etiquetas (
     nome_etiqueta VARCHAR(255) not null
 );
 
-insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '123', 'João', 'joao@teste.com', '123', 'aux', 'joaoaux');
-insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '456', 'Pedro', 'pedro@teste.com', '123', 'gerente', 'gerente123');
-insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '789', 'Ana', 'ana@teste.com', '123', 'secretaria', 'secretaria');
-insert into users (id, matricula, nome, email, senha, cargo, assinatura) values (null, '012', 'Paula', 'paula@teste.com', '123', 'agente de apoio', 'agentex');
+drop table if exists tags;
+create table if not exists etiquetas (
+    id int auto_increment primary key,
+    id_user int not null,
+    nome_tags VARCHAR(255) not null
+);
+
+
+insert into users (id, id_permissao, matricula, nome, email, senha, cargo, assinatura) values (null, 1, '123', 'João', 'joao@teste.com', '123', 'aux', 'joaoaux');
+insert into users (id, id_permissao, matricula, nome, email, senha, cargo, assinatura) values (null, 2, '456', 'Pedro', 'pedro@teste.com', '123', 'gerente', 'gerente123');
+insert into users (id, id_permissao, matricula, nome, email, senha, cargo, assinatura) values (null, 3, '789', 'Ana', 'ana@teste.com', '123', 'secretaria', 'secretaria');
+insert into users (id, id_permissao, matricula, nome, email, senha, cargo, assinatura) values (null, 4, '012', 'Paula', 'paula@teste.com', '123', 'agente de apoio', 'agentex');
 
 
 -- testes inserção de dados
