@@ -26,7 +26,7 @@ export const formatDate = (value: string, formatting: Intl.DateTimeFormatOptions
   if (!value)
     return value
 
-  return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
+  return new Intl.DateTimeFormat('pt-br', formatting).format(new Date(value))
 }
 
 /**

@@ -1,27 +1,19 @@
 <script setup lang="ts">
 import axios from '@axios'
+import Visualizar from '@/pages/comunicacao/recebido/index.vue'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import type { MoveEmailToAction } from '@/views/apps/email/useEmail'
-import { useEmail } from '@/views/apps/email/useEmail'
 import { useEmailStore } from '@/views/apps/email/useEmailStore'
-import { useResponsiveLeftSidebar } from '@core/composable/useResponsiveSidebar'
-import { formatDateToMonthShort } from '@core/utils/formatters'
+import { formatDate } from '@core/utils/formatters'
 
 const pesquisa = ref('')
 const filtros = ref('')
+
+const emailAberto = ref(false)
 
 // Composables
 const route = useRoute()
 const store = useEmailStore()
 const emailsLista = ref([])
-
-const {
-  labels,
-  resolveLabelColor,
-  emailMoveToFolderActions,
-  shallShowMoveToActionFor,
-  moveSelectedEmailTo,
-} = useEmail()
 
 // Ref
 const q = ref('')
@@ -77,28 +69,6 @@ axios.get('comunicacao').then(res => {
 
   😊 For simplicity of the code and possible of modification, we kept it simple.
 */
-const handleActionClick = async (
-  action: 'trash' | 'unread' | 'read' | 'spam' | 'star' | 'unstar',
-  emailIds: Email['id'][] = selectedEmails.value,
-) => {
-  if (!emailIds.length)
-    return
-
-  if (action === 'trash')
-    store.updateEmails(emailIds, { isDeleted: true })
-  else if (action === 'spam')
-    store.updateEmails(emailIds, { folder: 'spam' })
-  else if (action === 'unread')
-    store.updateEmails(emailIds, { isRead: false })
-  else if (action === 'read')
-    store.updateEmails(emailIds, { isRead: true })
-  else if (action === 'star')
-    store.updateEmails(emailIds, { isStarred: true })
-  else if (action === 'unstar')
-    store.updateEmails(emailIds, { isStarred: false })
-
-  await fetchEmails()
-}
 
 // fetch emails on search & route change
 watch([q, () => route.params.filter, () => route.params.label], fetchEmails, {
@@ -110,15 +80,32 @@ watch([() => route.params.filter, () => route.params.label], () => {
   openedEmail.value = null
 })
 
-const openEmail = (email: Email) => {
-  openedEmail.value = email
-
-  handleActionClick('read', [email.id])
+const openEmail = (email: object) => {
+  emailAberto.value = true
+  axios.get(`comunicacao/${email.id}`).then(res => {
+    console.log(res)
+  }).catch(e => {
+    console.log(e)
+  })
 }
+
+const resolveLabelColor = (label:any) => {
+    if (label === 'aberto')
+      return 'success'
+    if (label === 'pendente')
+      return 'primary'
+    if (label === 'enviado')
+      return 'warning'
+    if (label === 'recebido')
+      return 'error'
+
+    return 'secondary'
+  }
 </script>
 
 <template>
-  <div>
+  <sector>
+  <div v-if="!emailAberto">
     <VRow>
       <VCol cols="6">
         <VTextField
@@ -172,7 +159,6 @@ const openEmail = (email: Email) => {
         <!-- 👉 Emails list -->
         <PerfectScrollbar
           tag="ul"
-          :options="{ wheelPropagation: false }"
           class="email-list"
         >
           <li
@@ -180,7 +166,6 @@ const openEmail = (email: Email) => {
             v-show="emailsLista.length"
             :key="email.id"
             class="email-item d-flex align-center py-2 px-5 cursor-pointer"
-            :class="[{ 'email-read': email.isRead }]"
             @click="openEmail(email)"
           >
               <h6 class="mx-2 text-body-1 font-weight-medium text-high-emphasis">
@@ -192,6 +177,16 @@ const openEmail = (email: Email) => {
               </h6>
 
               <VSpacer />
+              <div class="email-meta">
+              <VBadge
+                inline
+                :color="resolveLabelColor(email.status)"
+                dot
+              />
+              <small class="text-disabled ms-2">{{
+                formatDate(email.data_criacao, { dateStyle: 'full', timeStyle: 'short', timeZone: 'America/Sao_Paulo' })
+              }}</small>
+            </div>
             </li>
             <li
               v-show="!emailsLista.length"
@@ -204,6 +199,8 @@ const openEmail = (email: Email) => {
     </VMain>
   </VLayout>
   </div>
+  <Visualizar v-else/>
+  </sector>
 </template>
 
 <style lang="scss">
@@ -260,9 +257,9 @@ const openEmail = (email: Email) => {
       display: block !important;
     }
 
-    .email-meta {
-      display: none;
-    }
+    // .email-meta {
+    //   display: none;
+    // }
 
     + .email-item {
       border-color: transparent;

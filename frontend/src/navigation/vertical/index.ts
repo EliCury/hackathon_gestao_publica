@@ -8,27 +8,27 @@ export default [
   },
   {
     title: 'Iniciar processo',
-    icon: { icon: 'tabler-file' },
+    icon: { icon: 'tabler-folder-plus' },
   },
   {
     title: 'Nova CI',
     to: { name: 'comunicacao-nova-ci' },
-    icon: { icon: 'tabler-file' },
+    icon: { icon: 'tabler-message-2-plus' },
   },
   {
     title: 'Novo Ofício',
-    icon: { icon: 'tabler-file' },
+    icon: { icon: 'tabler-file-plus' },
   },
   {
     title: 'Ofício',
-    icon: { icon: 'tabler-file' },
+    icon: { icon: 'tabler-file-invoice' },
   },
   {
     title: 'Processo',
-    icon: { icon: 'tabler-file' },
+    icon: { icon: 'tabler-folder' },
   },
   {
     title: 'Comunicação Geral',
-    icon: { icon: 'tabler-file' },
+    icon: { icon: 'tabler-speakerphone' },
   },
 ] as VerticalNavItems
