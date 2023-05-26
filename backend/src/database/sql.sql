@@ -38,7 +38,7 @@ create table if not exists comunicacao (
     id int auto_increment PRIMARY KEY,
     id_status int not null,
     tipos_comunicacao int not null,
-    data_criacao DATE,
+    data_criacao datetime,
     emissor VARCHAR(255) NOT NULL,
     assunto VARCHAR(255) NOT NULL,
     mensagem TEXT,
@@ -52,7 +52,7 @@ create table if not exists assinantes (
     id int auto_increment primary key,
     id_comunicacao int not null,
     status ENUM('pendente', 'assinado', 'recebido'),
-    data_criacao DATE
+    data_criacao datetime
 );
 
 drop table if exists receptores;
@@ -60,7 +60,7 @@ create table if not exists receptores (
     id int auto_increment primary key,
     id_comunicacao int not null,
     id_user int not null,
-    data_criacao DATE
+    data_criacao datetime
 );
 
 drop table if exists etiquetas;

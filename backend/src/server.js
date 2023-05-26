@@ -58,17 +58,12 @@ app.get('/comunications/count', (req, res) => {
 		res.json({ labels, data, groupBy});
 	});
 });
-//
-app.listen(port, () => {
-	console.log(`App Listening on port ${port}`);
-});
-
 
 // obter todos usuarios.
 app.get('/comunicacao', (req, res) => {
 	connection.query(`SELECT * FROM comunicacao as c
-	LEFT JOIN assinantes as a ON a.id_comunicacao = a.id_comunicacao
-	LEFT JOIN receptores as r ON r.id_comunicacao = a.id_comunicacao`, (error, results) => {
+	left JOIN assinantes as a ON a.id_comunicacao = c.id
+	left JOIN receptores as r ON r.id_comunicacao = c.id`, (error, results) => {
 	  if (error) throw error;
 	  res.json(results);
 	});
